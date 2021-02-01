@@ -1,38 +1,34 @@
-.App {
+.retirement-game {
+  background-color: #ffffff;
+  font-family: Georgia;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 0px;
+  text-align: center;
+  width: 100%;
+  height: 100%;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+header {
+  background-color: rgba(121, 1, 1, 0.637);
+  color: #f7f7f7;
   display: flex;
-  flex-direction: column;
+  justify-content: space-around;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  min-height: 40px;
+  width: 100%;
 }
 
-.App-link {
-  color: #61dafb;
+div {
+  font-family: Arial;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.underline {
+  text-decoration: underline;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
 }

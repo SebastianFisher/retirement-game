@@ -1,0 +1,27 @@
+Button {
+    display: inline-block;
+}
+span.btn {
+    font-size: 25px;
+    color: #f7f7f7;
+}
+
+.home-screen {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.body {
+    height: 92vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    max-width: 800px;
+}
+
+

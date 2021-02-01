@@ -1,0 +1,74 @@
+.portfolio {
+    box-sizing: border-box;
+    font-size: 24px;
+    text-align: center;
+    height: 300px;
+    width: 250px;
+    border-radius: 15px;
+    border: 1px solid;
+    overflow: hidden;
+    margin: 0 auto 15px;
+    display: inline-block;
+}
+
+.portfolio.two {
+    margin-right: 10px;
+}
+
+.portfolio .name {
+    background-color: rgba(121, 1, 1, 0.637);
+    color: #f7f7f7;
+    padding: 5px;
+    width: 100%;
+}
+
+.portfolio .content {
+    width: 100%;
+    height: calc(100% - 46px);
+}
+
+.portfolio .img {
+    width: 100%;
+    height: auto;
+}
+
+.portfolio .balance {
+    width: 100%;
+    height: 100%;
+    margin: 60px auto;
+}
+
+.portfolio .balance-shared {
+    width: 60% !important;
+    height: 100%;
+    float: left;
+    border-right: 1px solid;
+    padding-top: 25%;
+}
+
+.portfolio .allocation {
+    height: 100%;
+    width: 40%;
+    float: left;
+    font-size: 14px;
+}
+
+.portfolio .equities {
+    height: 50%;
+    border-bottom: 1px solid;
+    padding-top: calc(50% - 1em);
+}
+
+.portfolio .cash {
+    height: 50%;
+    padding-top: calc(50% - 1em);
+}
+
+@keyframes arrowIn {
+    from {
+        transform: scale(0.75);
+    }
+    to {
+        transform: scale(1);
+    }
+}
