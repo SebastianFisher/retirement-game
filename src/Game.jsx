@@ -76,18 +76,18 @@ function GameInfo(props) {
                 <Portfolio balance={props.balance} result={props.marketResult} title={"Investment Portfolio"} equities={props.potA} cash={props.potB} />
                 <p style={{ fontSize: 22 }}>
                     Round: {props.round}<br />
-                    Path: {props.pathNum+1}<br />
+                    Path: {props.pathNum + 1}<br />
                 </p>
             </div>
         );
     } else if (props.version === 2) {
         return (
-            <div clasName="info">
+            <div className="info">
                 <Portfolio balance={props.potA} result={props.marketResult} title={"Growth Portfolio"} />
                 <Portfolio balance={props.potB} title={"Spending Portfolio"} result={props.spendResult} />
                 <p style={{ fontSize: 22 }}>
                     Round: {props.round}<br />
-                    Path: {props.pathNum+1}<br />
+                    Path: {props.pathNum + 1}<br />
                     Total Wealth: ${props.balance.toFixed(2)}<br />
                 </p>
             </div>
@@ -133,12 +133,12 @@ function MarketInfo(props) {
     if (props.end) {
         return (
             <div>
-            <div className="market-info">
-                <img src={bgImage} alt={`market ${increaseOrDecrease}`} />
-                <div className="results-container"><p className="results">{result}</p></div>
+                <div className="market-info">
+                    <img src={bgImage} alt={`market ${increaseOrDecrease}`} />
+                    <div className="results-container"><p className="results">{result}</p></div>
+                </div>
+                <Button variant="danger" onClick={props.continueToEnd}>Game Over! Continue</Button>
             </div>
-            <Button variant="danger" onClick={props.continueToEnd}>Game Over! Continue</Button>
-        </div>
         )
     }
 
@@ -161,10 +161,10 @@ export default class Game extends React.Component {
 
         let numRounds = 4;
         for (let i = 0; i < 2; ++i) {
-            numRounds += Math.floor(Math.random()*2);
+            numRounds += Math.floor(Math.random() * 2);
         }
 
-        let firstVersion = Math.floor(Math.random() * 2 + 1);
+        this.firstVersion = Math.floor(Math.random() * 2 + 1);
 
         this.paths = [[-0.2, 0.2, -0.2, 0.3, 0.1, -0.2], [-0.3, 0.2, 0, 0.4, .1, 0.3], [0.1, 0.1, 0, 0.2, 0, 0.1], [0.1, 0.1, 0, 0.2, 0.2], [0.1, 0.2, 0.1, 0, -0.1, 0], [-0.1, -.4, -.2, 0.4, 0.4, 0.2], [0.2, -.2, .3, .3, .2, .1], [-.2, .3, .3, 0, .2, 0], [0.3, 0.1, 0.2, 0.3, 0.1, 0.2], [0.1, 0.1, 0.1, 0.1, -0.1, 0.2]];
 
@@ -174,14 +174,12 @@ export default class Game extends React.Component {
             potB: 50.0,
             round: 1,
             marketResult: "",
-            numRounds: numRounds,
-            stage: "rules",
-            allocation: 50,
-            gameData: []
+            spendResult: "",
+            allocation: 50
         };
 
         // Sets states with values for the balance, round, and rounds
-        this.state = { ...this.initialState, gameNum: 0, pathsUsed: [], version: firstVersion };
+        this.state = { ...this.initialState, gameNum: 0, stage: "rules", pathsUsed: [], numRounds: numRounds, version: this.firstVersion };
 
         // bind necessary methods
         this.doneReadingRules = this.doneReadingRules.bind(this);
@@ -194,18 +192,36 @@ export default class Game extends React.Component {
         this.takeAdvice = this.takeAdvice.bind(this);
         this.changeToChoices = this.changeToChoices.bind(this);
         this.continueToEnd = this.continueToEnd.bind(this);
+        this.resetGame = this.resetGame.bind(this);
+        this.nextGame = this.nextGame.bind(this);
     }
 
     // choose a random path
     changePath() {
         this.setState(state => {
-            // copy the paths used array and add a randomly chosen path to it 
-            let path = Math.floor(Math.random() * this.paths.length);
+            let path;
             const copyPathsUsed = state.pathsUsed.slice();
-            while (copyPathsUsed.includes(path)) {
-                path = Math.floor(Math.random() * this.paths.length);
+            if (state.gameNum === 0 || state.gameNum === 7) {
+                path = 9;
+            } else if (state.gameNum > 0 && state.gameNum < 7) {
+                // copy the paths used array and add a randomly chosen path to it from paths 1-6
+                path = Math.floor(Math.random() * 6);
+                while (copyPathsUsed.includes(path)) {
+                    path = Math.floor(Math.random() * 6);
+                }
+                copyPathsUsed.push(path);
+            } else {
+                if (state.gameNum === 8) {
+                    copyPathsUsed.splice(0, copyPathsUsed.length);
+                }
+                // choose a random path either 5, 1, 0, 6, 7, or, 8
+                const possPaths = [5, 1, 0, 6, 7, 8];
+                path = possPaths[Math.floor(Math.random() * possPaths.length)];
+                while (copyPathsUsed.includes(path)) {
+                    path = Math.floor(Math.random() * possPaths.length);
+                }
+                copyPathsUsed.push(path);
             }
-            copyPathsUsed.push(path);
 
             // return updated state
             return {
@@ -213,11 +229,6 @@ export default class Game extends React.Component {
                 pathsUsed: copyPathsUsed
             }
         });
-    }
-
-    // reset to default game values
-    resetGame() {
-        this.setState(this.initialState);
     }
 
     // spend function
@@ -280,7 +291,7 @@ export default class Game extends React.Component {
 
     // open rebalance slider
     doRebalance() {
-        this.setState({ rebalance: true, stage: "rebalance"});
+        this.setState({ rebalance: true, stage: "rebalance" });
     }
 
     // Handles the change to the allocation value when the rebalance slider is moved
@@ -299,7 +310,7 @@ export default class Game extends React.Component {
 
     // moves on from the rebalancing phase
     handleRebalanceOver() {
-        this.setState(state => ({round: state.round + 1, stage: "market", rebalance: false}));
+        this.setState(state => ({ round: state.round + 1, stage: "market", rebalance: false }));
     }
 
     // method for if the user decides to take the default advice for the current strategy
@@ -322,7 +333,58 @@ export default class Game extends React.Component {
 
     // continues to the end screen after game
     continueToEnd() {
-        this.setState({stage: "end"});
+        this.setState({ stage: "end" });
+    }
+
+    // reset to default game values for the next round
+    resetGame() {
+        this.setState(this.initialState);
+    }
+
+    // continues on to the next game once the player reaches the end screen
+    nextGame() {
+        this.resetGame(); // reset to default game values
+
+        // move to next game
+        this.setState(state => {
+            console.log(state);
+            // change the stage to rules or markets, depending on the game
+            let stage;
+            if (state.gameNum === 6) {
+                stage = "rules";
+            } else {
+                stage = "market";
+            }
+
+            // change the version if passed game number 7
+            let version = state.version;
+            if (state.gameNum === 6) {
+                state.version === 1 ? version = 2 : version = 1;
+            }
+
+            // reset number of rounds
+            let numRounds = 4;
+            for (let i = 0; i < 2; ++i) {
+                numRounds += Math.floor(Math.random() * 2);
+            }
+
+            return {
+                gameNum: state.gameNum + 1,
+                stage: stage,
+                version: version,
+                numRounds: numRounds
+            }
+        }, this.changePath);
+
+        // move to end end screen if done with all rounds
+        this.setState(state => {
+            let stage = state.stage;
+            if (state.gameNum === 13) {
+                stage = "endEnd";
+            }
+
+            return {stage};
+        });
     }
 
     render() {
@@ -339,7 +401,7 @@ export default class Game extends React.Component {
         else if (this.state.stage === "choices") {
             content = <div>
                 <GameInfo version={this.state.version} potA={this.state.potA} potB={this.state.potB} balance={this.state.balance} round={this.state.round} marketResult={this.state.marketResult} spendResult={this.state.spendResult} pathNum={this.state.path} />
-                <MarketInfo change={this.state.gainOrLoss} version={this.state.version} potA={this.state.initPotA} continue={this.continue} takeAdvice={this.takeAdvice} rebalance={this.doRebalance}/>
+                <MarketInfo change={this.state.gainOrLoss} version={this.state.version} potA={this.state.initPotA} continue={this.continue} takeAdvice={this.takeAdvice} rebalance={this.doRebalance} />
             </div>;
         }
         else if (this.state.stage === "rebalance") {
@@ -352,7 +414,7 @@ export default class Game extends React.Component {
         else if (this.state.stage === "choices-end") {
             content = (<div>
                 <GameInfo version={this.state.version} potA={this.state.potA} potB={this.state.potB} balance={this.state.balance} round={this.state.round} marketResult={this.state.marketResult} spendResult={this.state.spendResult} pathNum={this.state.path} />
-                <MarketInfo change={this.state.gainOrLoss} version={this.state.version} potA={this.state.initPotA} continue={this.continue} takeAdvice={this.takeAdvice} rebalance={this.doRebalance} end={true} continueToEnd={this.continueToEnd}/>
+                <MarketInfo change={this.state.gainOrLoss} version={this.state.version} potA={this.state.initPotA} continue={this.continue} takeAdvice={this.takeAdvice} rebalance={this.doRebalance} end={true} continueToEnd={this.continueToEnd} />
             </div>);
         } else if (this.state.stage === "end") {
             let message;
@@ -364,12 +426,17 @@ export default class Game extends React.Component {
             content = (
                 <div>
                     <GameInfo version={this.state.version} potA={this.state.potA} potB={this.state.potB} balance={this.state.balance} round={this.state.round} marketResult={this.state.marketResult} spendResult={this.state.spendResult} pathNum={this.state.path} />
-                    <p style={{"font-size": "20px"}}>{`Game Over! ${message}`}</p>
+                    <p style={{ "fontSize": "20px" }}>{`Game Over! ${message}`}</p>
+                    <Button variant="primary" onClick={this.nextGame}>Next Game</Button>
+                </div>
+            )
+        } else {
+            content = (
+                <div>
+                    <p style={{ "fontSize": "20px" }}>All rounds completed.</p>
                 </div>
             )
         }
-
-
 
         // figure out heading
         let strategy;
