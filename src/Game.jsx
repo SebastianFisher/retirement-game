@@ -7,7 +7,7 @@ import pic2 from "./images/market-decrease.png";
 import "./Game.css";
 
 function GameRules(props) {
-    let rulesBtn = <Button variant="danger" onClick={props.onClick}>I Understand (Continue)</Button>
+    let rulesBtn = <Button variant="danger" onClick={props.onClick}>Continue</Button>
     if (props.version === 1) {
         return (
             <div className="game-rules">
