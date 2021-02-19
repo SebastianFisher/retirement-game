@@ -12,15 +12,17 @@ export default class HomeScreen extends React.Component {
                     <h1>Welcome!</h1>
                 </header>
                 <div className="body">
-                    <p>In this engagement, you will experience two different investment strategies for retirement. 
-                    Both are intended to grow and distribute wealth over the course of your retirement. They differ 
-                    in how they fund retirement spending, how they define risk, and how they allocate and “rebalance” 
-                    assets within the portfolio. <br /><br />After an initial “test round” to get used to both strategies, you will play 6 “rounds” with each, 
-                    roughly equivalent to six different market paths in retirement per approach. At the start of each round 
-                    you will be provided $100 in retirement assets, and in each stage of each round (roughly equivalent to a 
-                    single year in retirement) you must “spend” $10.  The goal of the engagement, as you undergo both strategies, 
-                    is to reach the end of retirement successfully, i.e. you want to end each “round” with some assets remaining. 
-                    On average the rounds will last for five stages but can last as few as four and as many as six.</p>
+                    <p>We’re exploring how retirees navigate market risks in their retirement journey.
+                    In this exercise, your task is to rebalance your retirement portfolios at the end
+                    each “year,” and your goal is to end the journey without running out of funds. You
+                    will make 6 journeys in total. In each, you will begin with $100 net worth and will
+                    be required to spend $20 each “year” to support your retirement, but each journey
+                    will vary in length (number of “years”) and composition of market returns.
+                    Treat each journey as if it was the only journey you’ll make. That is,
+                    each journey is independent and unrelated to the others. <br />
+                    In the first half of the exercise, you will make your allocation decisions in the
+                    Planning Strategy A framework and the second half will be played in the Strategy
+                    B framework. There will be practice rounds to get familiar with each strategy.</p>
                     <Link to="./game">
                         <Button variant="danger" className="game-btn"><span>Start</span></Button>
                     </Link>
