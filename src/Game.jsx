@@ -1,9 +1,8 @@
 import React from 'react';
 import { Button } from "react-bootstrap";
 import Portfolio from "./Portfolio.jsx";
+import Bucket from "./Bucket.jsx";
 import RebalanceSlider from "./RebalanceSlider.jsx";
-import pic1 from "./images/market-increase.png";
-import pic2 from "./images/market-decrease.png";
 import "./Game.css";
 
 function GameRules(props) {
@@ -12,9 +11,9 @@ function GameRules(props) {
         return (
             <div className="game-rules">
                 <h4>Strategy A:</h4>
-                <p>Strategy A is a <span className="underline">traditional, theory-based approach</span> to retirement investing.
-                It involves a fixed allocation to stocks and bonds along with automatic annual rebalancing of the portfolio back
-                to the original, fixed allocation. </p>
+                <p>This approach to retirement investing involves a fixed allocation to stocks and bonds
+                along with automatic annual rebalancing of the porfolio back to the original, fixed allocation.
+                In this approach: </p>
                 <ul className="rules-list">
                     <li>
                         Your $100 of financial assets are placed in a single balanced
@@ -22,15 +21,14 @@ function GameRules(props) {
                         and the other half allocated to safe assets like bonds).
                     </li>
                     <li>
-                        Each year you withdraw $10 for spending predetermined spending amounts
-                        from the portfolio, drawing down the risky and safe assets together pro rata,
-                        in proportion to the underlying allocation.
+                        Each year you withdraw $20 to support the next year's spending, drawing
+                        down the risky and safe assets together equally.
                     </li>
                     <li>
-                        At the end of each year, regardless of how the markets performed, the default
-                        advice is to "rebalance" the portfolio is automatically “rebalanced,” back to its initial
-                        allocation (e.g. 50% stocks, 50% bonds) after the retiree withdraws that year’s spending amount.
-                        The player may alternatively choose not to rebalance or even move to an entirely different allocation.
+                        At the end of each year, regardless of how the markets perfom, the portfolio is
+                        automatically "rebalanced," back to its initial allocation (e.g. 50% stocks, 50% bonds). 
+                        The player may alternatively choose not to rebalance or to move their assets out of equities 
+                        into bonds.
                     </li>
                 </ul>
                 {rulesBtn}
@@ -40,28 +38,25 @@ function GameRules(props) {
         return (
             <div className="game-rules">
                 <h4>Strategy B:</h4>
-                <p>Strategy A is a <span className="underline">modern, behavior-based approach</span> to retirement investing.
-                It involves a bond-oriented allocation dedicated to support near-term spending needs and an equity allocation
-                for longer-term growth. The growth portfolio replenishes the spending portfolio only when markets are accommodative.</p>
+                <p>In this approach to retirement investing:</p>
                 <ul className="rules-list">
                     <li>
                         Your $100 of financial assets are placed in two separate portfolios, each dedicated to a
-                        specific purpose. One of these portfolios consists of safe assets like bonds which are less
-                        exposed to market movements. This portfolio is used to support your annual spending allowance
-                        over a set period of years.
+                        specific purpose.
                     </li>
                     <li>
-                        Each year you withdraw $10 for spending from the safe portfolio. The safe portfolio is not
-                        impacted by the markets.
+                        One of these portfolios consists of safe assets like bonds which are less
+                        exposed to market movements.
                     </li>
                     <li>
-                        The other portfolio consists of risky assets like stocks, and is dedicated to long term growth
-                        and is not drawn on directly to support spending.
+                        Each year you withdraw $20 from the safe portfolio to fund your spending that year. The safe
+                        portfolio does not suffer from negative markets.
                     </li>
-                    <li>At the end of each year, if the market did not go down, the default advice is to replenish
-                    the safe portfolio with one year's spending ($10) from the growth portfolio. The player may alternatively
-                    choose to replenish more or less or even move money from the safe portfolio to the growth portfolio
-                    regardless of market performance.</li>
+                    <li>
+                        The other portfolio (the growth portfolio) consists of risky assets like stocks and is dedicated to long term growth.
+                    </li>
+                    <li>At the end of each year, if the market is supportive, we advise you to replenish the safe portfolio with
+                    one year's spending ($20) from the growth porftolio.</li>
                 </ul>
                 {rulesBtn}
             </div>
@@ -83,8 +78,10 @@ function GameInfo(props) {
     } else if (props.version === 2) {
         return (
             <div className="info">
-                <Portfolio balance={props.potA} result={props.marketResult} title={"Growth Portfolio"} />
-                <Portfolio balance={props.potB} title={"Spending Portfolio"} result={props.spendResult} />
+                <div id="buckets">
+                    <Bucket balance={props.potA} title={"Growth Portfolio"} />
+                    <Bucket balance={props.potB} title={"Spending Portfolio"} />
+                </div>
                 <p style={{ fontSize: 22 }}>
                     Round: {props.round}<br />
                     Path: {props.pathNum + 1}<br />
@@ -96,45 +93,40 @@ function GameInfo(props) {
 }
 
 function MarketInfo(props) {
-
-
-
     let result;
     let increased = props.change > 0;
+    let percChange = Math.floor(props.change / props.potA * 100);
     let newPotA = props.potA + props.change;
+    let portfolio = props.version === 1 ? "portfolio" : "growth portfolio";
     let advice;
     if (increased) {
-        result = `The markets went up and your equities increased in value from $${props.potA.toFixed(2)} to $${newPotA.toFixed(2)}. `;
+        result = `The markets went up ${percChange}% and your ${portfolio} increased in value from $${props.potA.toFixed(2)} to $${newPotA.toFixed(2)}. `;
         if (props.version === 2) {
-            advice = "Since the market went up, we advise that you shift $10 into your spending portfolio to cover another year of spending.";
+            advice = "We advise that you shift $20 into your spending portfolio to cover another year of spending.";
         }
     } else {
-        result = `The markets went down and your equities decreased in value from $${props.potA.toFixed(2)} to $${newPotA.toFixed(2)}. `;
+        result = `The markets went down and your ${portfolio} decreased in value from $${props.potA.toFixed(2)} to $${newPotA.toFixed(2)}. `;
         if (props.version === 2) {
-            advice = "Since the market went down, we advise that you leave your allocation between portfolios as is.";
+            advice = "Since the market went down, we advise that you NOT move additional assets from your safe portfolio to the growth portfolio.";
         }
     }
     if (props.version === 1) {
         advice = "We advise that you shift your portfolio back to the default 50/50 allocation.";
     }
 
-    let increaseOrDecrease = increased ? 'increase' : 'decrease';
     let info;
     if (props.version === 1) {
-        info = `After the market ${increaseOrDecrease}, $10 was taken from your portfolio to account for living expenses. `;
+        info = `$20 was taken from your portfolio to support your spending next year. Your total portfolio balance is shown above. `;
     } else {
-        info = `After the market ${increaseOrDecrease}, $10 was taken from your spending portfolio to account for living expenses. Your current portfolio balance is shown above. `;
+        info = `$20 was taken from your spending portfolio to support your spending next year. Your total portfolio balance is shown above. `;
     }
 
     result += info + advice;
-
-    let bgImage = increased ? pic1 : pic2;
 
     if (props.end) {
         return (
             <div>
                 <div className="market-info">
-                    <img src={bgImage} alt={`market ${increaseOrDecrease}`} />
                     <div className="results-container"><p className="results">{result}</p></div>
                 </div>
                 <Button variant="danger" onClick={props.continueToEnd}>Game Over! Continue</Button>
@@ -145,11 +137,9 @@ function MarketInfo(props) {
     return (
         <div>
             <div className="market-info">
-                <img src={bgImage} alt={`market ${increaseOrDecrease}`} />
                 <div className="results-container"><p className="results">{result}</p></div>
             </div>
             <Button variant="danger" onClick={props.takeAdvice}>Take the Advice</Button>
-            <Button variant="danger" onClick={props.rebalance}>Choose Your Own Reallocation</Button>
             <Button variant="danger" onClick={props.continue}>Don't Reallocate</Button>
         </div>
     );
@@ -186,9 +176,9 @@ export default class Game extends React.Component {
         this.changePath = this.changePath.bind(this);
         this.markets = this.markets.bind(this);
         this.continue = this.continue.bind(this);
-        this.doRebalance = this.doRebalance.bind(this);
-        this.handleSlide = this.handleSlide.bind(this);
-        this.handleRebalanceOver = this.handleRebalanceOver.bind(this);
+        // this.doRebalance = this.doRebalance.bind(this);
+        // this.handleSlide = this.handleSlide.bind(this);
+        // this.handleRebalanceOver = this.handleRebalanceOver.bind(this);
         this.takeAdvice = this.takeAdvice.bind(this);
         this.changeToChoices = this.changeToChoices.bind(this);
         this.continueToEnd = this.continueToEnd.bind(this);
@@ -233,16 +223,19 @@ export default class Game extends React.Component {
 
     // spend function
     spend() {
-        this.setState(state => ({
-            initPotB: state.potB,
-            potBAfterSpend: state.potB - 10,
-            spendResult: "decrease"
-        }));
-
-        this.setState(state => ({
-            potB: state.potB - 10,
-            balance: state.balance - 10
-        }));
+        if (this.state.version === 2) {
+            this.setState(state => ({
+                potB: state.potB - 20,
+                balance: state.balance - 20
+            }));
+        }
+        else if (this.state.version === 1) {
+            this.setState(state => ({
+                potB: state.potB - 10,
+                potA: state.potA - 10,
+                balance: state.balance - 20
+            }));
+        }
     }
 
     // Simulates action of the markets on your balance
@@ -289,24 +282,25 @@ export default class Game extends React.Component {
         this.setState(state => ({ round: state.round + 1, stage: "market" }));
     }
 
+    // REBALANCING CODE (NOT USING FOR NOW)
     // open rebalance slider
-    doRebalance() {
-        this.setState({ rebalance: true, stage: "rebalance" });
-    }
+    // doRebalance() {
+    //     this.setState({ rebalance: true, stage: "rebalance" });
+    // }
 
     // Handles the change to the allocation value when the rebalance slider is moved
-    handleSlide(value) {
-        this.setState({ allocation: value })
-        this.rebalance();
-    }
+    // handleSlide(value) {
+    //     this.setState({ allocation: value })
+    //     this.rebalance();
+    // }
 
     // Rebalances the pot based on the allocation value (ranges from 0.25 --> 0.75)
-    rebalance() {
-        this.setState(state => ({
-            potA: Number(state.allocation),
-            potB: Number(state.balance - state.allocation)
-        }));
-    }
+    // rebalance() {
+    //     this.setState(state => ({
+    //         potA: Number(state.allocation),
+    //         potB: Number(state.balance - state.allocation)
+    //     }));
+    // }
 
     // moves on from the rebalancing phase
     handleRebalanceOver() {
@@ -383,7 +377,7 @@ export default class Game extends React.Component {
                 stage = "endEnd";
             }
 
-            return {stage};
+            return { stage };
         });
     }
 

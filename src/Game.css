@@ -7,20 +7,12 @@
     position: relative;
 }
 
-.market-info img {
-    opacity: 0.3;
-}
-
-.market-info .results-container {
-    position: absolute;
-    height: auto;
-    bottom: 0;
-    top: 10%;
-    width: 100%;
-    text-align: center;
-}
-
 .market-info .results {
     max-width: 500px;
     margin: 0 auto;
+}
+
+#buckets {
+    display: flex;
+    justify-content: center;
 }

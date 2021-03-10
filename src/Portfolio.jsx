@@ -1,21 +1,8 @@
 import React from 'react';
+import Bucket from "./Bucket.jsx";
 import "./Portfolio.css";
-import up from "./images/up-arrow.png";
-import down from "./images/down-arrow.png";
 
 export default function Portfolio(props) {
-    // Initialize an arrow to nothing currently (in the case that no increase has been made)
-    let arrow = null;
-    let animation = "arrowIn 0.5s ease-in forwards";
-    // Create var for the arrow depending on market result prop
-    const result = props.result;
-    if (result === "increase") {
-        arrow = <img src={up} alt="result arrow" style={{ animation }} />;
-    } else if (result === "decrease") {
-        arrow = <img src={down} alt="result arrow" style={{ animation }} />;
-    } else {
-        arrow = null;
-    }
     // create a div for allocation balances if needed
     let allocation;
     if (props.equities) {
@@ -61,8 +48,7 @@ export default function Portfolio(props) {
             </div>
             <div className="content">
                 <div className={balClassName}>
-                    <strong style={{ fontSize: "22px" }}>Balance:</strong><br />
-                    ${props.balance.toFixed(2)} {arrow}
+                    <Bucket balance={props.balance} title={`Total Balance: $${props.balance.toFixed(2)}`} fit={true} />
                 </div>
                 {allocation}
             </div>

@@ -1,6 +1,6 @@
 .portfolio {
     box-sizing: border-box;
-    font-size: 24px;
+    font-size: 18px;
     text-align: center;
     height: 300px;
     width: 250px;
@@ -43,7 +43,6 @@
     height: 100%;
     float: left;
     border-right: 1px solid;
-    padding-top: 25%;
 }
 
 .portfolio .allocation {
